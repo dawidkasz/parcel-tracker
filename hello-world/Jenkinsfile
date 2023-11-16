@@ -4,7 +4,7 @@ pipeline {
     environment {
         NEXUS_CREDENTIALS_ID = 'nexus-id' // ID of your stored Nexus credentials
         NEXUS_URL = 'nexus:8081' // Replace with your Nexus URL
-        REPO_NAME = 'maven-releases' // Replace with your Nexus repository name
+        REPO_NAME = 'maven-snapshots' // Replace with your Nexus repository name
     }
 
     tools {
@@ -45,32 +45,32 @@ options {
             }
         }
 
-//        stage('Upload to Nexus') {
-//            steps {
-//                dir('hello-world/build/libs'){
-//                script {
-//                    // Upload the JAR file to Nexus
-//                    nexusArtifactUploader(
-//                        nexusVersion: 'nexus3',
-//                        protocol: 'http',
-//                        nexusUrl: NEXUS_URL,
-//                        groupId: 'com.example',
-//                        version: '1.0.0',
-//                        repository: REPO_NAME,
-//                        credentialsId: NEXUS_CREDENTIALS_ID,
-//                        artifacts: [
-//                            [artifactId: 'myapp',
-//                             classifier: '',
-//                             file: 'hello-world-0.0.1-SNAPSHOT.jar',
-//                             type: 'jar']
-//                        ]
-//                    )
-//                }
-//
-//                }
-//
-//            }
-//        }
+        stage('Upload to Nexus') {
+            steps {
+                dir('hello-world/build/libs'){
+                script {
+                    // Upload the JAR file to Nexus
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: NEXUS_URL,
+                        groupId: 'com.example',
+                        version: '0.0.1-SNAPSHOT',
+                        repository: REPO_NAME,
+                        credentialsId: NEXUS_CREDENTIALS_ID,
+                        artifacts: [
+                            [artifactId: 'myapp',
+                            classifier: '',
+                            file: 'hello-world-0.0.1-SNAPSHOT.jar',
+                            type: 'jar']
+                        ]
+                    )
+                }
+
+                }
+
+            }
+        }
     }
     post {
        success {
