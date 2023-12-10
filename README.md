@@ -1,5 +1,11 @@
 # PIS
 
+**Table of contents:**
+* [Project overview](#project-overview)
+* [App setup](#app-setup)
+* [Start project](#start-project)
+  * [Tutorials](#tutorials)
+
 ## Project overview
 This repository is for a microservices-based Parcel Tracking System. It allows clients to add and track shipments using a unique number. 
 The system integrates with various carriers to locate the specific shipment. It features storing tracking history in a local database and periodically checks for updates on saved shipments. 
@@ -55,8 +61,13 @@ management:
    curl --location --request POST 'YOUR-SERVICE-URL/actuator/refresh'
    ```
    For example `http://localhost:8080/actuator/refresh`.
-   
+
 ## Start project
 1. Start service discovery
 2. (Optionally) Start config server
 3. Start your service and wait for registering
+
+### Tutorials
+- https://www.baeldung.com/spring-cloud-netflix-eureka
+- https://spring.io/projects/spring-cloud
+- https://youtu.be/9Jd4aY5-9S4
