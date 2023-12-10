@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "destination": "Warsaw",
+    "origin": "Poznan",
+    "weight": "1kg",
+    "status": [
+      {
+        "time": 12,
+        "text": "delivered"
+      },
+      {
+        "time": 10,
+        "text": "picked by courier"
+      }
+    ]
+  }
+]
