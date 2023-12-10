@@ -15,9 +15,9 @@ The system offers search functionality across all shipment attributes and enable
 
 1. Add dependencies 
     ```
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-	implementation("org.springframework.cloud:spring-cloud-starter-config")
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
     ```
 
 2. Add decorator on beans which will use config from config server:
@@ -56,11 +56,20 @@ management:
 
    - use `application.yml` for general configurations
    - create `{application name}.yml` file for service specific configuration
+
 5. After changes make `POST` request for service which configs you want to refresh i.e.
    ```shell
    curl --location --request POST 'YOUR-SERVICE-URL/actuator/refresh'
    ```
    For example `http://localhost:8080/actuator/refresh`.
+
+6. To use additional services use `@FeignClient(“service-name”)` annotation.
+A good method for creating such Feign Clients is to create interfaces with @RequestMapping annotated methods and put them into a separate module. 
+This way they can be shared between server and client. On the server-side, we can implement them as @Controller, and on the client-side, they can be extended and annotated as @FeignClient.
+
+See [Greeting Client in test service](test-service/src/main/java/com/parcel/testservice/GreetingController.java) and 
+[Greeting Client in demoapp](demo-app/src/main/java/com/parcel/demoapp/GreetingClient.java) and implementation in 
+[DemoAppApplication](demo-app/src/main/java/com/parcel/demoapp/DemoAppApplication.java)
 
 ## Start project
 1. Start service discovery
