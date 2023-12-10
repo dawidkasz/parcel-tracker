@@ -1,4 +1,4 @@
-package com.parcel.raportgenerator;
+package com.parcel.reportgenerator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
