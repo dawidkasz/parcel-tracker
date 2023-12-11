@@ -20,7 +20,7 @@ options {
         stage('Clean Workspace') {
             steps {
                 echo 'test'
-                updateGitlabCommitStatus name: 'build', state: 'pending'
+                updateGitlabCommitStatus name: 'build all changed microservices', state: 'pending'
             }
         }
         stage('Checkout') {
