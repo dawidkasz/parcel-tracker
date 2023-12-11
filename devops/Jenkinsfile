@@ -67,37 +67,47 @@ options {
 
         stage('Test') {
             steps {
-                dir('hello-world'){
-                sh './gradlew test'
-                }
+                script {
+                    def testSteps = [:] // Creating an empty map for parallel steps
 
+                    // Populate the testSteps map with parallel tasks
+                    dirsToBuild.each { dirName ->
+                        testSteps[dirName] = { // Use directory name as the key for the map
+                            dir(dirName) {
+                                sh './gradlew test'
+                            }
+                        }
+                    }
+
+                    // Run the test steps in parallel
+                    parallel testSteps
+                }
             }
         }
 
-        stage('Upload to Nexus') {
+        stage('Upload') {
+            when {
+                expression { env.CHANGE_TARGET == 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
+            }
             steps {
-                dir('hello-world/build/libs'){
                 script {
-                    // Upload the JAR file to Nexus
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: NEXUS_URL,
-                        groupId: 'com.example',
-                        version: '0.0.1-SNAPSHOT',
-                        repository: REPO_NAME,
-                        credentialsId: NEXUS_CREDENTIALS_ID,
-                        artifacts: [
-                            [artifactId: 'myapp',
-                            classifier: '',
-                            file: 'hello-world-0.0.1-SNAPSHOT.jar',
-                            type: 'jar']
-                        ]
-                    )
-                }
+                    dirsToBuild.each { dirName ->
+//                        def artifactPath = "${dirName}/build/libs/*.jar"
 
+                        nexusArtifactUploader(
+                                nexusVersion: 'nexus3',
+                                protocol: 'http',
+                                nexusUrl: NEXUS_URL,
+                                groupId: 'com.parcel',
+                                version: '1.0.0',
+                                repository: REPO_NAME,
+                                credentialsId: NEXUS_CREDENTIALS_ID,
+                                artifacts: [
+                                        [artifactId: "${dirName}", file: '${dirName}-1.0.0.jar', type: 'jar'] // ?
+                                ]
+                        )
+                    }
                 }
-
             }
         }
     }
@@ -107,7 +117,6 @@ options {
        }
 
        failure {
-
             updateGitlabCommitStatus name: 'build', state: 'failed'
         }
    }
