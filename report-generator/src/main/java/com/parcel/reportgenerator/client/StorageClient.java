@@ -22,12 +22,12 @@ public class StorageClient {
     private final static String BUCKET_NAME = "test-bucket";
 
 
-    public Optional<String> saveFile(String fileName, String content) {
-        try (var data = new ByteArrayInputStream(content.getBytes())) {
+    public Optional<String> saveFile(String fileName, byte[] content) {
+        try (var data = new ByteArrayInputStream(content)) {
             try {
                 var response = reportStorageClient.putObject(
                         PutObjectArgs.builder().bucket(BUCKET_NAME).object(fileName).stream(
-                                        data, content.getBytes().length, -1)
+                                        data, content.length, -1)
                                 .contentType("text/plain")
                                 .build());
                 return Optional.ofNullable(response.object());
