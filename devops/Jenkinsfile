@@ -112,12 +112,19 @@ options {
         }
     }
     post {
-       success {
-           updateGitlabCommitStatus name: 'build', state: 'success'
-       }
-
-       failure {
-            updateGitlabCommitStatus name: 'build', state: 'failed'
+        success {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                    updateGitlabCommitStatus name: 'build', state: 'success'
+                }
+            }
         }
-   }
+        failure {
+            script {
+                if (currentBuild.result == 'FAILURE') {
+                    updateGitlabCommitStatus name: 'build', state: 'failed'
+                }
+            }
+        }
+    }
 }
