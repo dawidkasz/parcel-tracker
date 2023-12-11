@@ -1,3 +1,5 @@
+def dirsToBuild = null
+
 pipeline {
     agent any
 
@@ -35,17 +37,31 @@ options {
                     def changedDirs = checkChanges.getChangedDirectories()
                     println "Changed Microservices: ${changedDirs.join(', ')}"
 
-                    // You can now use 'changedDirs' to conditionally run steps for each microservice
+                    dirsToBuild = checkChanges.getDirectoriesWithGradlew(changedDirs)
+                    println "Microservices with gradlew (to build): ${dirsToBuild.join(', ')}"
+
+                    // Use dirsToBuild for further steps to build these microservices
                 }
             }
         }
 
         stage('Build') {
             steps {
-                dir('hello-world'){
-                sh './gradlew build'
-                }
+                script {
+                    def buildSteps = [:] // Creating an empty map for parallel steps
 
+                    // Populate the buildSteps map with parallel tasks
+                    dirsToBuild.each { dirName ->
+                        buildSteps[dirName] = { // Use directory name as the key for the map
+                            dir(dirName) {
+                                sh './gradlew build'
+                            }
+                        }
+                    }
+
+                    // Run the build steps in parallel
+                    parallel buildSteps
+                }
             }
         }
 

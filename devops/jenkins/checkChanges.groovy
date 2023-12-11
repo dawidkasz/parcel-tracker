@@ -13,4 +13,14 @@ def getChangedDirectories() {
     return changedDirs
 }
 
+def getDirectoriesWithGradlew(changedDirs) {
+    def dirsToBuild = []
+    changedDirs.each { dir ->
+        if (fileExists("${dir}/gradlew")) {
+            dirsToBuild.add(dir)
+        }
+    }
+    return dirsToBuild
+}
+
 return this
