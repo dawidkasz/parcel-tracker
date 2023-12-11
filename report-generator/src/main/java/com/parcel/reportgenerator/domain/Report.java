@@ -1,4 +1,4 @@
 package com.parcel.reportgenerator.domain;
 
-public record Report(String filename, String content) {
+public record Report(String query) {
 }
