@@ -82,7 +82,8 @@ options {
 
         stage('Upload') {
             when {
-                expression { env.CHANGE_TARGET != 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
+		expression {return false}
+                //expression { env.CHANGE_TARGET != 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
