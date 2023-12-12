@@ -17,14 +17,9 @@ options {
     gitLabConnection('GitLabStud')
 }
     stages {
-        stage('Clean Workspace') {
-            steps {
-                echo 'test'
-                updateGitlabCommitStatus name: 'build all changed microservices', state: 'pending'
-            }
-        }
         stage('Checkout') {
             steps {
+                updateGitlabCommitStatus name: 'build', state: 'pending'
                 checkout scm
             }
         }
@@ -87,7 +82,7 @@ options {
 
         stage('Upload') {
             when {
-                expression { env.CHANGE_TARGET == 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
+                expression { env.CHANGE_TARGET != 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 script {
