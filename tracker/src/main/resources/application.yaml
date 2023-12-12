@@ -1,9 +1,0 @@
-server:
-  port: 8080
-
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://kuba:0CHAyP8alEibhumj@cluster.wnmcj.mongodb.net/?retryWrites=true&w=majority
-      database: parcelsdb
-
