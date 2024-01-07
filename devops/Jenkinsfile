@@ -1,0 +1,126 @@
+def dirsToBuild = null
+
+pipeline {
+    agent any
+
+    environment {
+        NEXUS_CREDENTIALS_ID = 'nexus-id' // ID of your stored Nexus credentials
+        NEXUS_URL = 'nexus:8081' // Replace with your Nexus URL
+        REPO_NAME = 'maven-snapshots' // Replace with your Nexus repository name
+    }
+
+    tools {
+            // Specify the Gradle version configured in Jenkins
+            gradle 'gradle'
+        }
+options {
+    gitLabConnection('GitLabStud')
+}
+    stages {
+        stage('Checkout') {
+            steps {
+                updateGitlabCommitStatus name: 'build', state: 'pending'
+                checkout scm
+            }
+        }
+
+        stage('Detect Changes') {
+            steps {
+                script {
+                    def checkChanges = load 'devops/jenkins/checkChanges.groovy'
+
+                    def changedDirs = checkChanges.getChangedDirectories()
+                    println "Changed Microservices: ${changedDirs.join(', ')}"
+
+                    dirsToBuild = checkChanges.getDirectoriesWithGradlew(changedDirs)
+                    println "Microservices with gradlew (to build): ${dirsToBuild.join(', ')}"
+
+                    // Use dirsToBuild for further steps to build these microservices
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    def buildSteps = [:] // Creating an empty map for parallel steps
+
+                    // Populate the buildSteps map with parallel tasks
+                    dirsToBuild.each { dirName ->
+                        buildSteps[dirName] = { // Use directory name as the key for the map
+                            dir(dirName) {
+                                sh './gradlew build'
+                            }
+                        }
+                    }
+
+                    // Run the build steps in parallel
+                    parallel buildSteps
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    def testSteps = [:] // Creating an empty map for parallel steps
+
+                    // Populate the testSteps map with parallel tasks
+                    dirsToBuild.each { dirName ->
+                        testSteps[dirName] = { // Use directory name as the key for the map
+                            dir(dirName) {
+                                sh './gradlew test'
+                            }
+                        }
+                    }
+
+                    // Run the test steps in parallel
+                    parallel testSteps
+                }
+            }
+        }
+
+        stage('Upload') {
+            when {
+		expression {return false}
+                //expression { env.CHANGE_TARGET != 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
+            }
+            steps {
+                script {
+                    dirsToBuild.each { dirName ->
+//                        def artifactPath = "${dirName}/build/libs/*.jar"
+
+                        nexusArtifactUploader(
+                                nexusVersion: 'nexus3',
+                                protocol: 'http',
+                                nexusUrl: NEXUS_URL,
+                                groupId: 'com.parcel',
+                                version: '1.0.0',
+                                repository: REPO_NAME,
+                                credentialsId: NEXUS_CREDENTIALS_ID,
+                                artifacts: [
+                                        [artifactId: "${dirName}", file: '${dirName}-1.0.0.jar', type: 'jar'] // ?
+                                ]
+                        )
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                if (currentBuild.result == 'SUCCESS') {
+                    updateGitlabCommitStatus name: 'build', state: 'success'
+                }
+            }
+        }
+        failure {
+            script {
+                if (currentBuild.result == 'FAILURE') {
+                    updateGitlabCommitStatus name: 'build', state: 'failed'
+                }
+            }
+        }
+    }
+}
