@@ -21,8 +21,8 @@ public class ParcelStatusChangeProducer {
 
         KafkaProducer<String, ParcelStatusChangedEvent> producer = new KafkaProducer<>(properties);
 
-        ProducerRecord<String, ParcelStatusChangedEvent> producerRecord =
-                new ProducerRecord<>("parcel-status-change", new ParcelStatusChangedEvent("a", "status3"));
+        var event = new ParcelStatusChangedEvent("a", "status3", "test");
+        ProducerRecord<String, ParcelStatusChangedEvent> producerRecord = new ProducerRecord<>("parcel-status-change", event);
 
         producer.send(producerRecord);
 

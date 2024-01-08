@@ -20,7 +20,7 @@ public class ParcelStatusChangedEventHandler implements EventHandler<ParcelStatu
 
         Parcel parcel = new Parcel(
             event.id(),
-            "",
+            event.description(),
             event.status(),
             Instant.now()
         );
