@@ -24,7 +24,13 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+	implementation("org.springframework.kafka:spring-kafka")
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 dependencyManagement {
