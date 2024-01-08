@@ -7,5 +7,5 @@ import java.util.List;
 public interface ParcelRepository {
     void save(Parcel parcel);
 
-    List<Parcel> findAll();
+    List<Parcel> search(String query);
 }

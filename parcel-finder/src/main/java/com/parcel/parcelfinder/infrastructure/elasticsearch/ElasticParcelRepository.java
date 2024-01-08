@@ -4,6 +4,9 @@ import com.parcel.parcelfinder.application.ParcelRepository;
 import com.parcel.parcelfinder.domain.Parcel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,10 +26,12 @@ public class ElasticParcelRepository implements ParcelRepository {
     }
 
     @Override
-    public List<Parcel> findAll() {
-       return StreamSupport.stream(elasticParcelRepository.findAll().spliterator(), false)
-               .map(ElasticParcel::toParcel)
-               .collect(Collectors.toList());
+    public List<Parcel> search(String query) {
+        log.info("Searching for parcels using query {}", query);
+
+        return elasticParcelRepository.find(query).stream()
+            .map(ElasticParcel::toParcel)
+            .collect(Collectors.toList());
     }
 }
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class ParcelLister {
     private final ParcelRepository parcelRepository;
 
-    public List<Parcel> findAll() {
-        return parcelRepository.findAll();
+    public List<Parcel> search(String query) {
+        return parcelRepository.search(query);
     }
 }

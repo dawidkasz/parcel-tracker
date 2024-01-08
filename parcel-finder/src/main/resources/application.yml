@@ -8,7 +8,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: com.parcel.parcelfinder.infrastructure.kafka.ParcelStatusChangedEventDeserializer
       bootstrap-servers: localhost:29092
-      group-instance-id: result-client # skips rebalancing - remove in prod
+      group-instance-id: result-client
   jpa:
     properties:
       hibernate:
