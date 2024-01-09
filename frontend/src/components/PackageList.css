@@ -1,0 +1,38 @@
+/* PackageList.css */
+.package-list {
+    max-width: 300px;
+    margin: auto;
+}
+
+.package-list h2 {
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+li {
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+li:hover {
+    background-color: #f5f5f5;
+}
+
+ul ul {
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+ul ul li {
+    margin-bottom: 4px;
+    border: none;
+    padding: 4px;
+    background-color: #fff;
+}
