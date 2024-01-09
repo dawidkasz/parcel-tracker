@@ -1,15 +1,16 @@
 package com.parcel.tracker;
 
+import com.parcel.tracker.Tracker;
 import com.parcel.tracker.carrier.*;
-import com.parcel.tracker.model.Parcel;
-import com.parcel.tracker.model.ParcelRequest;
+import com.parcel.tracker.domain.ParcelRequest;
+import com.parcel.tracker.eventbus.EventBus;
+import com.parcel.tracker.eventbus.KafkaEventBus;
 import com.parcel.tracker.repository.ParcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class TrackerService {
@@ -17,17 +18,19 @@ public class TrackerService {
     private final List<Tracker> trackers;
 
     private final ParcelRepository parcelRepository;
+    private final EventBus eventBus;
 
     @Autowired
-    public TrackerService(List<Tracker> trackers, ParcelRepository parcelRepository) {
+    public TrackerService(List<Tracker> trackers, ParcelRepository parcelRepository, EventBus eventBus) {
         this.trackers = trackers;
         this.parcelRepository = parcelRepository;
+        this.eventBus = eventBus;
     }
 
     public void addParcel(ParcelRequest parcelRequest) {
         Carrier carrier = findCarrierForParcel(parcelRequest);
 
-        Tracker tracker = new Tracker(parcelRequest.getId(), convertParcelRequestToParcel(parcelRequest), carrier, parcelRepository);
+        Tracker tracker = new Tracker(parcelRequest.getId(), parcelRequest.toParcel(), carrier, parcelRepository, eventBus);
         addTracker(tracker);
         tracker.startTracking();
     }
@@ -44,10 +47,6 @@ public class TrackerService {
         } else {
             return new RandomCarrier(parcelRepository);
         }
-    }
-
-    private Parcel convertParcelRequestToParcel(ParcelRequest parcelRequest) {
-        return new Parcel(parcelRequest.getId(), parcelRequest.getCarrierName());
     }
 
     public void addTracker(Tracker tracker) {

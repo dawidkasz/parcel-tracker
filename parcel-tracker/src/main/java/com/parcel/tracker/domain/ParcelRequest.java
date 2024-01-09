@@ -1,4 +1,4 @@
-package com.parcel.tracker.model;
+package com.parcel.tracker.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,4 +8,9 @@ import lombok.Data;
 public class ParcelRequest {
     private String id;
     private String carrierName;
+    private String description;
+
+    public Parcel toParcel() {
+        return new Parcel(id, carrierName, description);
+    }
 }

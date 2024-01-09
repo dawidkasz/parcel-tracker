@@ -1,4 +1,4 @@
-package com.parcel.tracker.model;
+package com.parcel.tracker.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

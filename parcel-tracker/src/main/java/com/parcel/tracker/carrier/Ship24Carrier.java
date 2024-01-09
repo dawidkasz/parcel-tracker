@@ -3,7 +3,7 @@ package com.parcel.tracker.carrier;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcel.tracker.Tracker;
-import com.parcel.tracker.model.Parcel;
+import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -38,7 +38,13 @@ public class Ship24Carrier implements Carrier {
         try {
             sendAPIRequest(tracker.getParcelId());
 
-            Parcel newParcel = new Parcel(tracker.getParcelId(), tracker.getParcel().getCarrierName(), new ArrayList<>());            parcelRepository.save(newParcel);
+            Parcel newParcel = new Parcel(
+                    tracker.getParcelId(),
+                    tracker.getParcel().getCarrierName(),
+                    tracker.getParcel().getDescription(),
+                    new ArrayList<>()
+            );
+            parcelRepository.save(newParcel);
 
             System.out.println("Parcel " + tracker.getParcelId() + "  tracking started");
         } catch (Exception e) {
