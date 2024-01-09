@@ -1,0 +1,22 @@
+/* App.css */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left-panel,
+.right-panel {
+  flex: 1;
+  padding: 20px;
+  padding-top: 200px;
+}
+
+.left-panel {
+  background-color: #e0e0e0;
+}
+
