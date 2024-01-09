@@ -1,9 +1,6 @@
 package com.parcel.tracker;
 
-import com.parcel.tracker.carrier.Carrier;
-import com.parcel.tracker.carrier.FedExCarrier;
-import com.parcel.tracker.carrier.InPostCarrier;
-import com.parcel.tracker.carrier.Ship24Carrier;
+import com.parcel.tracker.carrier.*;
 import com.parcel.tracker.model.Parcel;
 import com.parcel.tracker.model.ParcelRequest;
 import com.parcel.tracker.repository.ParcelRepository;
@@ -12,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class TrackerService {
@@ -41,8 +39,10 @@ public class TrackerService {
             return new InPostCarrier(parcelRepository);
         } else if ("fedex".equalsIgnoreCase(carrierName)) {
             return new FedExCarrier(parcelRepository);
-        } else {
+        } else if ("ship24".equalsIgnoreCase(carrierName)) {
             return new Ship24Carrier(parcelRepository);
+        } else {
+            return new RandomCarrier(parcelRepository);
         }
     }
 
@@ -54,7 +54,7 @@ public class TrackerService {
         trackers.add(tracker);
     }
 
-    @Scheduled(fixedDelay = 15000)
+    @Scheduled(fixedDelay = 5000)
     public void checkAllTrackers() {
         trackers.forEach(Tracker::checkParcelStatus);
     }
