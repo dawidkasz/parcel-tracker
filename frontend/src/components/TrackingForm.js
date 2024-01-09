@@ -36,6 +36,7 @@ const TrackingForm = ({ onTrack }) => {
                 <option value="ship24">Ship24</option>
                 <option value="inpost">InPost</option>
                 <option value="fedex">FedEx</option>
+                <option value="random">Random</option>
             </select>
             <button onClick={handleTrack}>Nadaj Paczkę</button>
         </div>
