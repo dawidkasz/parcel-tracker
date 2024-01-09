@@ -1,6 +1,7 @@
-package com.parcel.tracker;
+package com.parcel.tracker.web;
 
-import com.parcel.tracker.model.ParcelRequest;
+import com.parcel.tracker.TrackerService;
+import com.parcel.tracker.domain.ParcelRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

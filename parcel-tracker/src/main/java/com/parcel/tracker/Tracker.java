@@ -1,8 +1,10 @@
 package com.parcel.tracker;
 
 import com.parcel.tracker.carrier.Carrier;
-import com.parcel.tracker.model.Parcel;
-import com.parcel.tracker.model.ParcelStatus;
+import com.parcel.tracker.domain.Parcel;
+import com.parcel.tracker.domain.ParcelStatus;
+import com.parcel.tracker.domain.ParcelStatusChangedEvent;
+import com.parcel.tracker.eventbus.EventBus;
 import com.parcel.tracker.repository.ParcelRepository;
 import lombok.Data;
 
@@ -18,17 +20,21 @@ public class Tracker {
     private final Carrier carrier;
     private final List<ParcelStatus> statusHistory;
     private final ParcelRepository parcelRepository;
+    private final EventBus eventBus;
 
-    public Tracker(String parcelId, Parcel parcel, Carrier carrier, ParcelRepository parcelRepository) {
+    public Tracker(String parcelId, Parcel parcel, Carrier carrier, ParcelRepository parcelRepository, EventBus eventBus) {
         this.parcelId = parcelId;
         this.parcel = parcel;
         this.carrier = carrier;
         this.statusHistory = new ArrayList<>();
         this.parcelRepository = parcelRepository;
+        this.eventBus = eventBus;
     }
 
     public void startTracking() {
         carrier.startTracking(this);
+        String status = parcel.getStatuses().isEmpty() ? "" : parcel.getStatuses().get(parcel.getStatuses().size() - 1).getStatus();
+        eventBus.notify(new ParcelStatusChangedEvent(parcelId, status, parcel.getDescription()));
     }
 
     public void checkParcelStatus() {
@@ -47,6 +53,8 @@ public class Tracker {
                 parcel.getStatuses().add(parcelStatus);
                 parcelRepository.save(parcel);
             });
+
+            eventBus.notify(new ParcelStatusChangedEvent(parcelId, status, parcel.getDescription()));
         }
     }
 }

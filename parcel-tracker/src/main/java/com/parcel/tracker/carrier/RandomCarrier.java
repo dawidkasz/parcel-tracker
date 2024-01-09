@@ -2,7 +2,7 @@ package com.parcel.tracker.carrier;
 
 
 import com.parcel.tracker.Tracker;
-import com.parcel.tracker.model.Parcel;
+import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,12 @@ public class RandomCarrier implements Carrier {
     @Override
     public void startTracking(Tracker tracker) {
         try {
-            Parcel newParcel = new Parcel(tracker.getParcelId(), tracker.getParcel().getCarrierName(), new ArrayList<>());
+            Parcel newParcel = new Parcel(
+                    tracker.getParcelId(),
+                    tracker.getParcel().getCarrierName(),
+                    tracker.getParcel().getDescription(),
+                    new ArrayList<>())
+                    ;
             parcelRepository.save(newParcel);
 
             System.out.println("Parcel " + tracker.getParcelId() + "  tracking started");
