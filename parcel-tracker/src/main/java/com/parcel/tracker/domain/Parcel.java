@@ -18,8 +18,6 @@ public class Parcel {
     }
 
     public Parcel(String id, String carrierName, String description) {
-        this.id = id;
-        this.carrierName = carrierName;
-        this.statuses = new ArrayList<>();
+        this(id, carrierName, description, new ArrayList<>());
     }
 }

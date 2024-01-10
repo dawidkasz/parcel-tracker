@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcel.tracker.Tracker;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,17 +24,13 @@ import java.util.ArrayList;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class Ship24Carrier implements Carrier {
 
     private static final String SHIP24_API_URL = "https://api.ship24.com/public/v1/trackers/track";
     private static final String API_KEY = "apik_ilPNcAM4GFtvy6vgXeeYuCD9Azzxkq";
 
     private final ParcelRepository parcelRepository;
-
-    @Autowired
-    public Ship24Carrier(ParcelRepository parcelRepository) {
-        this.parcelRepository = parcelRepository;
-    }
 
     @Override
     public void startTracking(Tracker tracker) {

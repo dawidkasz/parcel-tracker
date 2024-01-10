@@ -4,6 +4,7 @@ import com.parcel.tracker.carrier.*;
 import com.parcel.tracker.domain.ParcelRequest;
 import com.parcel.tracker.eventbus.EventBus;
 import com.parcel.tracker.repository.ParcelRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -11,19 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TrackerService {
 
     private final List<Tracker> trackers;
 
     private final ParcelRepository parcelRepository;
     private final EventBus eventBus;
-
-    @Autowired
-    public TrackerService(List<Tracker> trackers, ParcelRepository parcelRepository, EventBus eventBus) {
-        this.trackers = trackers;
-        this.parcelRepository = parcelRepository;
-        this.eventBus = eventBus;
-    }
 
     public void addParcel(ParcelRequest parcelRequest) {
         Carrier carrier = findCarrierForParcel(parcelRequest);

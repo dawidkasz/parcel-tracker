@@ -5,6 +5,7 @@ import com.parcel.tracker.Tracker;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,14 +15,10 @@ import java.util.Random;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class RandomCarrier implements Carrier {
 
     private final ParcelRepository parcelRepository;
-
-    @Autowired
-    public RandomCarrier(ParcelRepository parcelRepository) {
-        this.parcelRepository = parcelRepository;
-    }
 
     @Override
     public void startTracking(Tracker tracker) {
