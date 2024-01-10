@@ -1,10 +1,8 @@
 package com.parcel.tracker;
 
-import com.parcel.tracker.Tracker;
 import com.parcel.tracker.carrier.*;
 import com.parcel.tracker.domain.ParcelRequest;
 import com.parcel.tracker.eventbus.EventBus;
-import com.parcel.tracker.eventbus.KafkaEventBus;
 import com.parcel.tracker.repository.ParcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

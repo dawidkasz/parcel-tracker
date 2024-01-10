@@ -7,11 +7,13 @@ import com.parcel.tracker.domain.ParcelStatusChangedEvent;
 import com.parcel.tracker.eventbus.EventBus;
 import com.parcel.tracker.repository.ParcelRepository;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Data
 public class Tracker {
 
@@ -45,8 +47,8 @@ public class Tracker {
         if (statusHistory.stream().noneMatch(parcelStatus -> parcelStatus.getStatus().equals(status))) {
             ParcelStatus parcelStatus = new ParcelStatus(status, Instant.now());
             statusHistory.add(parcelStatus);
-            System.out.println("Parcel " + parcelId + " status updated: " + status);
-            System.out.println(statusHistory);
+
+            log.info("Parcel {} status has been updated to {}. Status history: {}", parcelId, status, statusHistory);
 
             // Dodanie nowego statusu do bazy danych
             parcelRepository.findById(parcelId).ifPresent(parcel -> {

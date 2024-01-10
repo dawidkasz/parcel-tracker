@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcel.tracker.Tracker;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.util.ArrayList;
 
+@Slf4j
 @Component
 public class Ship24Carrier implements Carrier {
 
@@ -46,7 +48,7 @@ public class Ship24Carrier implements Carrier {
             );
             parcelRepository.save(newParcel);
 
-            System.out.println("Parcel " + tracker.getParcelId() + "  tracking started");
+            log.info("Ship24 tracking started for parcel: {}", tracker.getParcelId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,10 +66,10 @@ public class Ship24Carrier implements Carrier {
                 JsonNode trackingNode = trackingsNode.get(0);
                 JsonNode shipmentNode = trackingNode.path("shipment");
                 String statusMilestone = shipmentNode.path("statusMilestone").asText();
-                System.out.println("Status for parcel " + tracker.getParcelId() + ": " + statusMilestone);
+                log.info("Status for parcel {}: ", tracker.getParcelId(), statusMilestone);
                 tracker.updateStatus(statusMilestone);
             } else {
-                System.out.println("No tracking data found in the JSON response.");
+                log.info("No tracking data found in the JSON response.");
             }
         } catch (Exception e) {
             e.printStackTrace();

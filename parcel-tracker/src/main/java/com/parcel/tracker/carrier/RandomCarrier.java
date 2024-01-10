@@ -5,12 +5,14 @@ import com.parcel.tracker.Tracker;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.repository.ParcelRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+@Slf4j
 @Component
 public class RandomCarrier implements Carrier {
 
@@ -32,7 +34,7 @@ public class RandomCarrier implements Carrier {
                     ;
             parcelRepository.save(newParcel);
 
-            System.out.println("Parcel " + tracker.getParcelId() + "  tracking started");
+            log.info("Parcel {} tracking has started.", tracker.getParcelId());
         } catch (Exception e) {
             e.printStackTrace();
         }
