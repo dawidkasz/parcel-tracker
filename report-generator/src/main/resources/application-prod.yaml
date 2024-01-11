@@ -1,0 +1,6 @@
+spring:
+  minio:
+    host: minio
+    port: 9000
+    username: minio-root-user
+    password: minio-root-password
