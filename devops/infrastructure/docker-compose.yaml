@@ -1,0 +1,58 @@
+version: '3.7'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+    networks:
+      - kafka-infrastructure
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - parcel-services
+      - kafka-infrastructure
+
+  kafka-setup:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka-setup
+    container_name: kafka-setup
+    depends_on:
+      - kafka
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+              kafka-topics --bootstrap-server kafka:9092 --list && \
+              kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic parcel-status-change --replication-factor 1 --partitions 1 && \
+              echo -e 'Successfully created the following topics:' && \
+              kafka-topics --bootstrap-server kafka:9092 --list'"
+    networks:
+      - parcel-services
+      - kafka-infrastructure
+      - edge-api
+
+networks:
+  edge-api:
+    driver: bridge
+  parcel-services:
+    driver: bridge
+  kafka-infrastructure:
+    driver: bridge
+  
+
+volumes:
+  jenkins_data:
+  nexus_data:
+  vault_data:

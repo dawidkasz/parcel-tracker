@@ -1,14 +1,15 @@
 version: '3.8'
 services:
-  service-discovery:
-    image: localhost:8084/service-discovery:latest
+  parcel-finder:
+    build: .
     ports:
-      - "7020:8080"
-      - "7021:8761"
+      - "7000:8080"
     networks:
+      - parcel-finder-inter
       - infrastructure_parcel-services
-
 networks:
   infrastructure_parcel-services:
     external: true
-
+  parcel-finder-inter:
+    external:
+      name: infra-parcel-finder

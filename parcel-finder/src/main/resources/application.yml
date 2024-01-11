@@ -1,4 +1,7 @@
 spring:
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:19200
   kafka:
     parcel-status-change-topic: parcel-status-change
     bootstrap-servers: localhost:29092
@@ -9,11 +12,5 @@ spring:
       value-deserializer: com.parcel.parcelfinder.infrastructure.kafka.ParcelStatusChangedEventDeserializer
       bootstrap-servers: localhost:29092
       group-instance-id: result-client
-  jpa:
-    properties:
-      hibernate:
-        search:
-          backend:
-            hosts: elasticsearch:9200
 server:
-  port: 8081
+  port: 6969
