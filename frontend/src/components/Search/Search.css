@@ -1,11 +1,11 @@
-/* PackageList.css */
-.package-list {
+.search {
     max-width: 300px;
     margin: auto;
+    text-align: center;
 }
 
-.package-list h2 {
-    text-align: center;
+.search h2 {
+    margin-bottom: 16px;
 }
 
 ul {
@@ -35,4 +35,8 @@ ul ul li {
     border: none;
     padding: 4px;
     background-color: #fff;
+}
+
+button {
+    margin-top: 16px;
 }
