@@ -8,5 +8,17 @@ spring:
           searchLocations: file://${pwd}/configs
   profiles:
     active: native
-server:
-  port: 8888
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://service-discovery:8761/eureka/}
+  instance:
+    preferIpAddress: true
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
