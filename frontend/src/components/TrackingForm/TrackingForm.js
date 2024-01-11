@@ -9,7 +9,7 @@ const TrackingForm = ({ onTrack }) => {
 
     const handleTrack = async () => {
         try {
-            const response = await axios.post('http://localhost:9090/tracking/add-parcel', {
+            const response = await axios.post('http://localhost:9090/tracking/start', {
                 id: trackingNumber,
                 carrierName: carrier,
             });

@@ -7,16 +7,29 @@ body {
 .container {
   display: flex;
   height: 100vh;
+  flex-direction: column; /* Domyślnie ustawiony na kolumnę na mniejszych ekranach */
 }
 
 .left-panel,
 .right-panel {
-  flex: 1;
-  padding: 20px;
-  padding-top: 200px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .left-panel {
   background-color: #e0e0e0;
 }
 
+/* Ustawienia dla ekranów o szerokości większej niż 768px (medium) */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row; /* Zmiana na układ wierszowy na większych ekranach */
+  }
+
+  .left-panel,
+  .right-panel {
+    flex: 1;
+  }
+}

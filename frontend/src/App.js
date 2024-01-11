@@ -1,9 +1,8 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import TrackingForm from './components/TrackingForm';
-import PackageList from './components/PackageList';
 import './App.css';
+import Search from './components/Search/Search';
+import TrackingForm from './components/TrackingForm/TrackingForm';
 
 function App() {
   const trackPackage = ({ trackingNumber, carrier }) => {
@@ -18,7 +17,7 @@ function App() {
             <TrackingForm onTrack={trackPackage} />
           </div>
           <div className="right-panel">
-            <PackageList />
+            <Search />
           </div>
         </div>
       </Router>
