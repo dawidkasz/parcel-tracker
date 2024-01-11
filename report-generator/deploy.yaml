@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  report-generator:
+    image: localhost:8084/report-generator:latest
+    ports:
+      - "6069:8080"
+    networks:
+      - report-generator-inter
+      - infrastructure_parcel-services
+networks:
+  infrastructure_parcel-services:
+    external: true
+  report-generator-inter:
+    external:
+      name: infra-report-generator
