@@ -5,9 +5,7 @@ services:
     ports:
       - "7037:8080"
     networks:
-      - gateway_backened
-
+      - infrastructure_parcel-services
 networks:
-  gateway_backened:
+  infrastructure_parcel-services:
     external: true
-

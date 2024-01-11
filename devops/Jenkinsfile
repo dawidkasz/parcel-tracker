@@ -108,6 +108,7 @@ pipeline {
                     dirsToDockerBuild.each { dirName ->
                         dir(dirName) {
                             if(fileExists('deploy.yaml')){
+                                sh 'docker-compose -f deploy.yaml pull'
                                 sh 'docker-compose -f deploy.yaml down'
                                 sh 'docker-compose -f deploy.yaml up -d'
                             }

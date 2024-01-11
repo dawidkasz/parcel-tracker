@@ -1,6 +1,30 @@
 spring:
+  application:
+      name: report-generator
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+  config:
+    import: "optional:configserver:"
   minio:
     host: minio
     port: 9000
     username: minio-root-user
     password: minio-root-password
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://service-discovery:8761/eureka/}
+  instance:
+    preferIpAddress: true
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
