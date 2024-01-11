@@ -1,23 +1,36 @@
 package com.parcel.tracker.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Data
+import static com.google.common.base.Preconditions.checkArgument;
+
+@Value
 @AllArgsConstructor
 public class Parcel {
-    private String id;
-    private String carrierName;
-    private String description;
-    private List<ParcelStatus> statuses;
+    String id;
+    Carrier carrier;
+    String description;
+    List<ParcelStatus> statuses;
 
-    public Parcel() {
+    public Parcel(String id, Carrier carrier, String description) {
+        this(id, carrier, description, new ArrayList<>());
     }
 
-    public Parcel(String id, String carrierName, String description) {
-        this(id, carrierName, description, new ArrayList<>());
+    public Optional<ParcelStatus> latestStatus() {
+        return statuses.isEmpty() ? Optional.empty() : Optional.of(statuses.get(statuses.size() - 1));
+    }
+
+    public void addNewStatus(ParcelStatus parcelStatus) {
+        checkArgument(
+            latestStatus().isEmpty() || !latestStatus().get().getStatus().equals(parcelStatus.getStatus()),
+            String.format("Parcel %s status hasn't changed.", id)
+        );
+
+        statuses.add(parcelStatus);
     }
 }

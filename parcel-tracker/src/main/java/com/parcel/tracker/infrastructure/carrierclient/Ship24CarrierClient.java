@@ -1,10 +1,12 @@
-package com.parcel.tracker.carrier;
+package com.parcel.tracker.infrastructure.carrierclient;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.parcel.tracker.Tracker;
+import com.parcel.tracker.application.carrier.CarrierClient;
+import com.parcel.tracker.application.carrier.CarrierClientException;
+import com.parcel.tracker.domain.Carrier;
 import com.parcel.tracker.domain.Parcel;
-import com.parcel.tracker.repository.ParcelRepository;
+import com.parcel.tracker.application.ParcelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -16,45 +18,43 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Ship24Carrier implements Carrier {
+public class Ship24CarrierClient implements CarrierClient {
 
     private static final String SHIP24_API_URL = "https://api.ship24.com/public/v1/trackers/track";
     private static final String API_KEY = "apik_ilPNcAM4GFtvy6vgXeeYuCD9Azzxkq";
 
     private final ParcelRepository parcelRepository;
 
+//    @Override
+//    public void startTracking(Parcel parcel) {
+//        try {
+//            sendAPIRequest(tracker.getParcelId());
+//
+//            Parcel newParcel = new Parcel(
+//                    tracker.getParcelId(),
+//                    tracker.getParcel().getCarrierName(),
+//                    tracker.getParcel().getDescription(),
+//                    new ArrayList<>()
+//            );
+//            parcelRepository.save(newParcel);
+//
+//            log.info("Ship24 tracking started for parcel: {}", tracker.getParcelId());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     @Override
-    public void startTracking(Tracker tracker) {
+    public String checkParcelStatus(Parcel parcel) throws CarrierClientException {
         try {
-            sendAPIRequest(tracker.getParcelId());
-
-            Parcel newParcel = new Parcel(
-                    tracker.getParcelId(),
-                    tracker.getParcel().getCarrierName(),
-                    tracker.getParcel().getDescription(),
-                    new ArrayList<>()
-            );
-            parcelRepository.save(newParcel);
-
-            log.info("Ship24 tracking started for parcel: {}", tracker.getParcelId());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void checkParcelStatus(Tracker tracker) {
-        try {
-            String responseString = sendAPIRequest(tracker.getParcelId());
+            String responseString = sendAPIRequest(parcel.getId());
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseString);
 
@@ -63,14 +63,21 @@ public class Ship24Carrier implements Carrier {
                 JsonNode trackingNode = trackingsNode.get(0);
                 JsonNode shipmentNode = trackingNode.path("shipment");
                 String statusMilestone = shipmentNode.path("statusMilestone").asText();
-                log.info("Status for parcel {}: ", tracker.getParcelId(), statusMilestone);
-                tracker.updateStatus(statusMilestone);
+//                log.info("Status for parcel {}: ", tracker.getParcelId(), statusMilestone);
+//                tracker.updateStatus(statusMilestone);
+                return statusMilestone;
             } else {
                 log.info("No tracking data found in the JSON response.");
+                throw CarrierClientException.cantCheckParcelStatus(parcel);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw CarrierClientException.cantCheckParcelStatus(parcel);
         }
+    }
+
+    @Override
+    public Carrier getCarrier() {
+        return Carrier.SHIP24;
     }
 
     private String sendAPIRequest(String parcelId) throws Exception {

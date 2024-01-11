@@ -1,5 +1,6 @@
-package com.parcel.tracker.eventbus;
+package com.parcel.tracker.infrastructure.kafka;
 
+import com.parcel.tracker.application.EventNotifier;
 import com.parcel.tracker.domain.ParcelStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class KafkaEventBus implements EventBus {
+public class KafkaParcelStatusChangedNotifier implements EventNotifier<ParcelStatusChangedEvent> {
     @Value("${spring.kafka.parcel-status-change-topic}")
     private String topic;
 
