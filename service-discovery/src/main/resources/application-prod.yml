@@ -5,7 +5,6 @@ eureka:
     hostname: service-discovery
   client:
     service-url:
-      defaultZone: http://service-discovery:8761/eureka/
-server:
-  port: 8761
+      defaultZone: http://service-discovery:8080/eureka/
+
 
