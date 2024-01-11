@@ -1,4 +1,4 @@
-package com.parcel.tracker;
+package com.parcel.tracker.infrastructure;
 
 import com.parcel.tracker.domain.ParcelStatusChangedEvent;
 import lombok.RequiredArgsConstructor;

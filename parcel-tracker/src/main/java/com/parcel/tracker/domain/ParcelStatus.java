@@ -1,13 +1,11 @@
 package com.parcel.tracker.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.time.Instant;
 
-@Data
-@AllArgsConstructor
+@Value(staticConstructor = "of")
 public class ParcelStatus {
-    private String status;
-    private Instant timestamp;
+    String status;
+    Instant timestamp;
 }
