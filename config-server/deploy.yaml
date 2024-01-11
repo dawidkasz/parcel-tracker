@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  config-server:
+    image: localhost:8084/config-server:latest
+    ports:
+      - "7037:8080"
+    networks:
+      - gateway_backened
+
+networks:
+  gateway_backened:
+    external: true
+

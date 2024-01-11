@@ -1,26 +1,26 @@
 def dirsToBuild = null
+def dirstToNPMBuild = null
+def dirsToDockerBuild = null
 
 pipeline {
     agent any
-
     environment {
-        NEXUS_CREDENTIALS_ID = 'nexus-id' // ID of your stored Nexus credentials
-        NEXUS_URL = 'nexus:8081' // Replace with your Nexus URL
-        REPO_NAME = 'maven-snapshots' // Replace with your Nexus repository name
+        DOCKER_IMAGE = 'my-spring-app'
+        NEXUS_URL = '172.26.0.2:8084'
+        NEXUS_CREDENTIALS_ID = 'nexus-id'
     }
 
     tools {
-            // Specify the Gradle version configured in Jenkins
-            gradle 'gradle'
-        }
-options {
-    gitLabConnection('GitLabStud')
-}
+        gradle 'gradle'
+    }
+    options {
+        gitLabConnection('AleToTyDzwoniszGitLab')
+    }
     stages {
         stage('Checkout') {
-            steps {
-                updateGitlabCommitStatus name: 'build', state: 'pending'
+            steps{
                 checkout scm
+                updateGitlabCommitStatus name: 'build', state: 'pending'
             }
         }
 
@@ -34,8 +34,14 @@ options {
 
                     dirsToBuild = checkChanges.getDirectoriesWithGradlew(changedDirs)
                     println "Microservices with gradlew (to build): ${dirsToBuild.join(', ')}"
-
                     // Use dirsToBuild for further steps to build these microservices
+
+                    dirsToDockerBuild = checkChanges.getDirectoriesWithDocker(changedDirs)
+                    println "Microservices with docker (to build): ${dirsToDockerBuild.join(', ')}"
+
+                    dirstToNPMBuild = checkChanges.getDirectoriesWithDocker(changedDirs)
+                    println "Microservices with docker (to build): ${dirstToNPMBuild.join(', ')}"
+
                 }
             }
         }
@@ -44,7 +50,6 @@ options {
             steps {
                 script {
                     def buildSteps = [:] // Creating an empty map for parallel steps
-
                     // Populate the buildSteps map with parallel tasks
                     dirsToBuild.each { dirName ->
                         buildSteps[dirName] = { // Use directory name as the key for the map
@@ -60,67 +65,66 @@ options {
             }
         }
 
-        stage('Test') {
+        stage('Build docker image') {
+            when {
+                branch 'main'
+            }
             steps {
-                script {
-                    def testSteps = [:] // Creating an empty map for parallel steps
-
-                    // Populate the testSteps map with parallel tasks
-                    dirsToBuild.each { dirName ->
-                        testSteps[dirName] = { // Use directory name as the key for the map
-                            dir(dirName) {
-                                sh './gradlew test'
-                            }
+                script{
+                    dirsToDockerBuild.each { dirName ->
+                        dir(dirName) {
+                            env.dirName = dirName
+                            sh "docker build -t ${dirName}:latest ."
                         }
                     }
+                }
+                
 
-                    // Run the test steps in parallel
-                    parallel testSteps
+            }
+        }
+        stage('Push to Nexus') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry("http://${NEXUS_URL}", "${NEXUS_CREDENTIALS_ID}") {
+                        dirsToDockerBuild.each { dirName ->
+                            env.dirName = dirName
+                            sh "docker tag ${dirName}:latest ${NEXUS_URL}/${dirName}:latest"
+                            sh "docker push ${NEXUS_URL}/${dirName}:latest"
+                        }
+                    }
                 }
             }
         }
-
-        stage('Upload') {
+        stage('Deploy') {
             when {
-		expression {return false}
-                //expression { env.CHANGE_TARGET != 'mj/test-ci' || env.GIT_BRANCH == 'origin/main' }
+                branch 'main'
             }
             steps {
-                script {
-                    dirsToBuild.each { dirName ->
-//                        def artifactPath = "${dirName}/build/libs/*.jar"
-
-                        nexusArtifactUploader(
-                                nexusVersion: 'nexus3',
-                                protocol: 'http',
-                                nexusUrl: NEXUS_URL,
-                                groupId: 'com.parcel',
-                                version: '1.0.0',
-                                repository: REPO_NAME,
-                                credentialsId: NEXUS_CREDENTIALS_ID,
-                                artifacts: [
-                                        [artifactId: "${dirName}", file: '${dirName}-1.0.0.jar', type: 'jar'] // ?
-                                ]
-                        )
+                script{
+                    dirsToDockerBuild.each { dirName ->
+                        dir(dirName) {
+                            if(fileExists('deploy.yaml')){
+                                sh 'docker-compose -f deploy.yaml down'
+                                sh 'docker-compose -f deploy.yaml up -d'
+                            }
+                        }
                     }
                 }
+
             }
         }
     }
     post {
-        success {
-            script {
-                if (currentBuild.result == 'SUCCESS') {
-                    updateGitlabCommitStatus name: 'build', state: 'success'
-                }
-            }
+       success {
+           updateGitlabCommitStatus name: 'build', state: 'success'
+       }
+
+       failure {
+
+            updateGitlabCommitStatus name: 'build', state: 'failed'
         }
-        failure {
-            script {
-                if (currentBuild.result == 'FAILURE') {
-                    updateGitlabCommitStatus name: 'build', state: 'failed'
-                }
-            }
-        }
-    }
+   }
 }
