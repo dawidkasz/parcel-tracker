@@ -21,12 +21,20 @@ dependencies {
     implementation("io.github.openfeign:feign-core:13.1")
     implementation("io.github.openfeign:feign-gson:13.1")
     implementation("org.apache.pdfbox:pdfbox:3.0.1")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:minio:1.19.3")
+}
+extra["springCloudVersion"] = "2023.0.0"
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
 }
 
 tasks.withType<Test> {
