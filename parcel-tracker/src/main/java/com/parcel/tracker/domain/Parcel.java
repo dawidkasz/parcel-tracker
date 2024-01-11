@@ -12,12 +12,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Value
 @AllArgsConstructor
 public class Parcel {
-    String id;
+    ParcelId id;
     Carrier carrier;
     String description;
     List<ParcelStatus> statuses;
 
-    public Parcel(String id, Carrier carrier, String description) {
+    public Parcel(ParcelId id, Carrier carrier, String description) {
         this(id, carrier, description, new ArrayList<>());
     }
 
