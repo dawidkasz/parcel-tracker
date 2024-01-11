@@ -18,4 +18,9 @@ services:
       memlock:
         soft: -1
         hard: -1
-
+    networks:
+      - parcel-finder
+networks:
+  parcel-finder:
+    name: infra-parcel-finder
+    driver: bridge

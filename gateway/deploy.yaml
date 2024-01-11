@@ -5,12 +5,11 @@ services:
     ports:
       - "7069:8080"
     networks:
-      frontend_frontend:
-      backened:
-    
+      infrastructure_edge-api:
+      infrastructure_parcel-services:
 
 networks:
-  frontend_frontend:
+  infrastructure_edge-api:
     external: true
-  backened:
-    driver: bridge
+  infrastructure_parcel-services:
+    external: true
