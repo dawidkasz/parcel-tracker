@@ -2,6 +2,10 @@ spring:
   kafka:
     parcel-status-change-topic: parcel-status-change
     bootstrap-servers: localhost:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: localhost:29092
   application:
     name: demo-app
   cloud:
