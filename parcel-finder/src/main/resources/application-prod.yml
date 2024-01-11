@@ -1,4 +1,13 @@
 spring:
+  application:
+      name: report-generator
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+  config:
+    import: "optional:configserver:"
   data:
     elasticsearch:
       cluster-nodes: elasticsearch:9200
