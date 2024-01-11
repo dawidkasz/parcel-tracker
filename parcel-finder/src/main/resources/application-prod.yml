@@ -1,6 +1,6 @@
 spring:
   application:
-      name: report-generator
+      name: parcel-finder
   cloud:
     config:
       discovery:
