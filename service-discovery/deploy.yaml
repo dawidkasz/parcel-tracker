@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  service-discovery:
+    image: localhost:8084/service-discovery:latest
+    ports:
+      - "7021:8080"
+    networks:
+      - gateway_backened
+
+networks:
+  gateway_backened:
+    external: true
+

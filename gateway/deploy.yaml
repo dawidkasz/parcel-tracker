@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  api-gateway:
+    image: localhost:8084/gateway:latest
+    ports:
+      - "7069:8080"
+    networks:
+      frontend_frontend:
+      backened:
+    
+
+networks:
+  frontend_frontend:
+    external: true
+  backened:
+    driver: bridge

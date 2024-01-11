@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  frontend:
+    build: localhost:8084/frontend:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+

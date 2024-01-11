@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  hello-world:
+    image: localhost:8084/hello-world:latest
+    ports:
+      - "8069:8080"
+
