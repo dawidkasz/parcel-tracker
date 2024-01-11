@@ -6,7 +6,6 @@ import com.parcel.tracker.application.carrier.CarrierClient;
 import com.parcel.tracker.application.carrier.CarrierClientException;
 import com.parcel.tracker.domain.Carrier;
 import com.parcel.tracker.domain.Parcel;
-import com.parcel.tracker.application.ParcelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -30,31 +29,10 @@ public class Ship24CarrierClient implements CarrierClient {
     private static final String SHIP24_API_URL = "https://api.ship24.com/public/v1/trackers/track";
     private static final String API_KEY = "apik_ilPNcAM4GFtvy6vgXeeYuCD9Azzxkq";
 
-    private final ParcelRepository parcelRepository;
-
-//    @Override
-//    public void startTracking(Parcel parcel) {
-//        try {
-//            sendAPIRequest(tracker.getParcelId());
-//
-//            Parcel newParcel = new Parcel(
-//                    tracker.getParcelId(),
-//                    tracker.getParcel().getCarrierName(),
-//                    tracker.getParcel().getDescription(),
-//                    new ArrayList<>()
-//            );
-//            parcelRepository.save(newParcel);
-//
-//            log.info("Ship24 tracking started for parcel: {}", tracker.getParcelId());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     public String checkParcelStatus(Parcel parcel) throws CarrierClientException {
         try {
-            String responseString = sendAPIRequest(parcel.getId());
+            String responseString = sendAPIRequest(parcel.getId().id());
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(responseString);
 

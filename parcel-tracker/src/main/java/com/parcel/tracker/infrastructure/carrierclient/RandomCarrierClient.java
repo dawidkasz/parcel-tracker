@@ -15,23 +15,6 @@ import java.util.Random;
 @Component
 @RequiredArgsConstructor
 public class RandomCarrierClient implements CarrierClient {
-//    @Override
-//    public void startTracking(Parcel parcel) {
-//        try {
-//            Parcel newParcel = new Parcel(
-//                    tracker.getParcelId(),
-//                    tracker.getParcel().getCarrierName(),
-//                    tracker.getParcel().getDescription(),
-//                    new ArrayList<>())
-//                    ;
-//            parcelRepository.save(newParcel);
-//
-//            log.info("Parcel {} tracking has started.", tracker.getParcelId());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     public String checkParcelStatus(Parcel parcel) {
         return shouldSetPendingStatus() ? "pending" : getRandomStatus();

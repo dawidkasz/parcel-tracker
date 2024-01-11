@@ -13,10 +13,16 @@ public class KafkaParcelStatusChangedNotifier implements EventNotifier<ParcelSta
     @Value("${spring.kafka.parcel-status-change-topic}")
     private String topic;
 
-    private final KafkaTemplate<String, ParcelStatusChangedEvent> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaParcelStatusChangedEvent> kafkaTemplate;
 
     @Override
     public void notify(ParcelStatusChangedEvent event) {
-        kafkaTemplate.send(topic, event);
+        kafkaTemplate.send(topic, KafkaParcelStatusChangedEvent.from(event));
+    }
+
+    private record KafkaParcelStatusChangedEvent(String id, String status, String description) {
+        public static KafkaParcelStatusChangedEvent from(ParcelStatusChangedEvent event) {
+            return new KafkaParcelStatusChangedEvent(event.id().id(), event.status(), event.description());
+        }
     }
 }

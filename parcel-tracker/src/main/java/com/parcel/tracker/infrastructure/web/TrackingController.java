@@ -4,6 +4,7 @@ import com.parcel.tracker.application.Tracker;
 import com.parcel.tracker.domain.Carrier;
 import com.parcel.tracker.domain.DomainException;
 import com.parcel.tracker.domain.Parcel;
+import com.parcel.tracker.domain.ParcelId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class TrackingController {
 
     public record StartParcelTrackingRequest(String id, Carrier carrier, String description) {
         public Parcel toParcel() {
-            return new Parcel(id, carrier, description);
+            return new Parcel(ParcelId.of(id), carrier, description);
         }
     }
 

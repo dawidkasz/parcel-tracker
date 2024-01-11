@@ -7,6 +7,7 @@ import com.parcel.tracker.domain.DomainException;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.domain.ParcelStatus;
 import com.parcel.tracker.domain.ParcelStatusChangedEvent;
+import com.parcel.tracker.infrastructure.mongo.SpringDataParcelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -24,7 +27,8 @@ import static com.google.common.base.Preconditions.checkState;
 @Service
 @RequiredArgsConstructor
 public class Tracker {
-    private static final int PACKAGE_STATUS_CHECK_INTERVAL_MS = 5000;
+    private static final int PACKAGE_STATUS_CHECK_INTERVAL_MS = 1000 * 60;
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     private final List<CarrierClient> carrierClients;
     private final ParcelRepository parcelRepository;
@@ -41,20 +45,14 @@ public class Tracker {
 
     @Scheduled(fixedDelay = PACKAGE_STATUS_CHECK_INTERVAL_MS)
     public void checkAllTrackers() {
-        Page<Parcel> currentPage = parcelRepository.findAll(PageRequest.of(0, 100));
-        processParcelsPage(currentPage);
-
-        while (currentPage.hasNext()) {
-            currentPage = parcelRepository.findAll(currentPage.nextPageable());
-            processParcelsPage(currentPage);
-        }
-    }
-
-    private void processParcelsPage(Page<Parcel> parcels) {
-        parcels.forEach(this::processSingleParcel);
+        parcelRepository.findAll().forEach(parcel ->
+            executorService.execute(() -> processSingleParcel(parcel))
+        );
     }
 
     private void processSingleParcel(Parcel parcel) {
+        log.debug("Processing parcel {}", parcel.getId());
+
         CarrierClient client = findCarrierClient(parcel.getCarrier());
 
         String newStatus;
@@ -70,6 +68,8 @@ public class Tracker {
         boolean statusChanged = latestStatus.isEmpty() || latestStatus.get().getStatus().equals(newStatus);
 
         if (statusChanged) {
+            log.debug("Received new status {} for parcel {}", newStatus, parcel.getId());
+
             parcel.addNewStatus(ParcelStatus.of(newStatus, Instant.now()));
             parcelRepository.save(parcel);
             notifiers.forEach(notifier ->
