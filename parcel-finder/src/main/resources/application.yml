@@ -1,7 +1,16 @@
 spring:
+  application:
+    name: parcel-finder
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
   data:
     elasticsearch:
-      cluster-nodes: localhost:19200
+      cluster-nodes: localhost:9200
   kafka:
     parcel-status-change-topic: parcel-status-change
     bootstrap-servers: localhost:29092
@@ -12,5 +21,13 @@ spring:
       value-deserializer: com.parcel.parcelfinder.infrastructure.kafka.ParcelStatusChangedEventDeserializer
       bootstrap-servers: localhost:29092
       group-instance-id: result-client
+
 server:
   port: 6969
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8080/eureka/}
+  instance:
+    preferIpAddress: true

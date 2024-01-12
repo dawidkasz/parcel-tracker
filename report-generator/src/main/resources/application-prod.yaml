@@ -6,6 +6,10 @@ spring:
       discovery:
         enabled: true
         service-id: CONFIG-SERVER
+    openfeign:
+      client:
+        config:
+          parcel-finder:
   config:
     import: "optional:configserver:"
   minio:
@@ -13,6 +17,9 @@ spring:
     port: 9000
     username: minio-root-user
     password: minio-root-password
+
+server:
+  port: 8080
 
 eureka:
   client:
@@ -27,4 +34,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh
+        include:
+          - health
+          - refresh

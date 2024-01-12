@@ -16,11 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/parcel")
-public class ParcelFinderController {
+public class ParcelFinderController implements PackageClient {
     private final ParcelLister parcelLister;
 
     @GetMapping("/search")
     public List<Parcel> findParcels(@RequestParam("q") String query) {
         return parcelLister.search(query);
+    }
+
+    @Override
+    public List<Parcel> getParcels(String query) {
+        return findParcels(query);
     }
 }

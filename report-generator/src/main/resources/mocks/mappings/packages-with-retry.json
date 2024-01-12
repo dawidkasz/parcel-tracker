@@ -1,0 +1,55 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "RetryAfterThreeAttempts",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "ErrorTwiceMore",
+      "request": {
+        "method": "GET",
+        "url": "/parcel/search-retry"
+      },
+      "response": {
+        "status": 500,
+        "body": "Error"
+      }
+    },
+    {
+      "scenarioName": "RetryAfterThreeAttempts",
+      "requiredScenarioState": "ErrorTwiceMore",
+      "newScenarioState": "ErrorOnceMore",
+      "request": {
+        "method": "GET",
+        "url": "/parcel/search-retry"
+      },
+      "response": {
+        "status": 500,
+        "body": "Error"
+      }
+    },
+    {
+      "scenarioName": "RetryAfterThreeAttempts",
+      "requiredScenarioState": "ErrorOnceMore",
+      "newScenarioState": "Success",
+      "request": {
+        "method": "GET",
+        "url": "/parcel/search-retry"
+      },
+      "response": {
+        "status": 500,
+        "body": "Error"
+      }
+    },
+    {
+      "scenarioName": "RetryAfterThreeAttempts",
+      "requiredScenarioState": "Success",
+      "request": {
+        "method": "GET",
+        "url": "/parcel/search-retry"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "packages.json"
+      }
+    }
+  ]
+}

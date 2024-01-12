@@ -1,5 +1,6 @@
 package com.parcel.reportgenerator.service;
 
+import com.netflix.discovery.converters.Auto;
 import com.parcel.reportgenerator.client.PackageClient;
 import com.parcel.reportgenerator.client.StorageClient;
 import com.parcel.reportgenerator.domain.Parcel;
@@ -7,6 +8,7 @@ import com.parcel.reportgenerator.domain.Report;
 import com.parcel.reportgenerator.drawer.ReportDrawerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedOutputStream;
@@ -25,7 +27,11 @@ public class ReportService {
     private final PackageClient packageClient;
 
     public Optional<String> createReport(Report report) {
-        var parcels = packageClient.getParcels();
+        var parcels = packageClient.getParcels("");
+        if (parcels.isEmpty()) {
+            log.debug("No parcel found");
+            return Optional.empty();
+        }
         var pdfReport = generateReport(parcels);
         return pdfReport.flatMap(pdf -> storageClient.saveFile(createFileName(report.query()), pdf));
     }
