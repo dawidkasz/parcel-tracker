@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/api/packages"
+    "url": "/parcel/search"
   },
   "response": {
     "status": 200,
