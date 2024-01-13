@@ -14,11 +14,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Parcel {
     ParcelId id;
     Carrier carrier;
-    String description;
     List<ParcelStatus> statuses;
 
-    public Parcel(ParcelId id, Carrier carrier, String description) {
-        this(id, carrier, description, new ArrayList<>());
+    public Parcel(ParcelId id, Carrier carrier) {
+        this(id, carrier, new ArrayList<>());
     }
 
     public Optional<ParcelStatus> latestStatus() {

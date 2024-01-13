@@ -13,19 +13,17 @@ import java.util.List;
 public record ParcelMongo(
         @Id String id,
         Carrier carrier,
-        String description,
         List<ParcelStatus> statuses
 ) {
     public static ParcelMongo from(Parcel parcel) {
         return new ParcelMongo(
                 parcel.getId().id(),
                 parcel.getCarrier(),
-                parcel.getDescription(),
                 parcel.getStatuses()
         );
     }
 
     public Parcel toParcel() {
-        return new Parcel(ParcelId.of(id), carrier, description, statuses);
+        return new Parcel(ParcelId.of(id), carrier, statuses);
     }
 }

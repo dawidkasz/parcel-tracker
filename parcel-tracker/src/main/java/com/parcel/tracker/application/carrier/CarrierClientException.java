@@ -3,8 +3,12 @@ package com.parcel.tracker.application.carrier;
 import com.parcel.tracker.domain.Parcel;
 
 public class CarrierClientException extends Exception {
-    private CarrierClientException(String message) {
+    public CarrierClientException(String message) {
         super(message);
+    }
+
+    public CarrierClientException(Exception exc) {
+        super(exc);
     }
 
     public static CarrierClientException cantCheckParcelStatus(Parcel parcel) {

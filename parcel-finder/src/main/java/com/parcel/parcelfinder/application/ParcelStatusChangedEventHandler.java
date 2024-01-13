@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -18,13 +19,17 @@ public class ParcelStatusChangedEventHandler implements EventHandler<ParcelStatu
     public void handle(ParcelStatusChangedEvent event) {
         log.info("Handling {} event", event);
 
-        Parcel parcel = new Parcel(
-            event.id(),
-            event.description(),
-            event.status(),
-            Instant.now()
-        );
+        Optional<Parcel> currentParcel = parcelRepository.findById(event.id());
 
-        parcelRepository.save(parcel);
+        if (currentParcel.isPresent()) {
+            log.debug("Parcel doesn't exist yet, creating...");
+            var parcel = currentParcel.get();
+            parcel.addNewStatus(event.status());
+            parcelRepository.save(parcel);
+        } else {
+            log.debug("Parcel already exists. Appending new status");
+            var parcel = new Parcel(event.id(), event.carrier(), List.of(event.status()));
+            parcelRepository.save(parcel);
+        }
     }
 }

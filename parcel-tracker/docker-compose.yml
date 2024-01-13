@@ -31,6 +31,7 @@ services:
       - kafka-tracker
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
               kafka-topics --bootstrap-server kafka-tracker:9092 --list && \
-              kafka-topics --bootstrap-server kafka-tracker:9092 --create --if-not-exists --topic parcel-status-change --replication-factor 1 --partitions 1 && \
+              kafka-topics --bootstrap-server kafka-tracker:9092 --delete --if-exists --topic parcel-status-change && \
+              kafka-topics --bootstrap-server kafka-tracker:9092 --create --topic parcel-status-change --replication-factor 1 --partitions 1 && \
               echo -e 'Successfully created the following topics:' && \
               kafka-topics --bootstrap-server kafka-tracker:9092 --list'"

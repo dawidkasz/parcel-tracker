@@ -1,4 +1,4 @@
-package com.parcel.tracker.domain;
+package com.parcel.parcelfinder.domain;
 
 public enum Carrier {
     INPOST,

@@ -2,11 +2,17 @@ package com.parcel.parcelfinder.infrastructure.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcel.parcelfinder.domain.events.ParcelStatusChangedEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
+@Slf4j
 public class ParcelStatusChangedEventDeserializer implements Deserializer<ParcelStatusChangedEvent> {
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public ParcelStatusChangedEventDeserializer() {
+        objectMapper.findAndRegisterModules();
+    }
 
     @Override
     public ParcelStatusChangedEvent deserialize(String topic, byte[] data) {
