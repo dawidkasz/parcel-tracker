@@ -6,10 +6,12 @@ import com.parcel.tracker.domain.ParcelId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+@Repository
 @RequiredArgsConstructor
 public class ParcelRepositoryMongo implements ParcelRepository {
     private final SpringDataParcelRepository springDataParcelRepository;

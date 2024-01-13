@@ -23,18 +23,30 @@ public class TrackingController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/start")
-    public void addParcelToTracking(@RequestBody StartParcelTrackingRequest request) throws DomainException {
+    public ResponseEntity<TrackingResponse> addParcelToTracking(@RequestBody StartParcelTrackingRequest request) throws DomainException {
         tracker.startTracking(request.toParcel());
+
+        return TrackingResponse.ok();
     }
 
-    public record StartParcelTrackingRequest(String id, Carrier carrier, String description) {
+    public record StartParcelTrackingRequest(String id, Carrier carrier) {
         public Parcel toParcel() {
-            return new Parcel(ParcelId.of(id), carrier, description);
+            return new Parcel(ParcelId.of(id), carrier);
         }
     }
 
     @ExceptionHandler(DomainException.class)
-    private ResponseEntity<Object> handleConflict(RuntimeException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<TrackingResponse> handleDomainException(DomainException ex) {
+        return TrackingResponse.error(ex.getMessage());
+    }
+
+    public record TrackingResponse(String detail) {
+        public static ResponseEntity<TrackingResponse> ok() {
+            return ResponseEntity.ok(new TrackingResponse("success"));
+        }
+
+        public static ResponseEntity<TrackingResponse> error(String detail) {
+            return ResponseEntity.badRequest().body(new TrackingResponse(detail));
+        }
     }
 }

@@ -6,16 +6,12 @@ import com.parcel.tracker.domain.Carrier;
 import com.parcel.tracker.domain.DomainException;
 import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.domain.ParcelStatus;
-import com.parcel.tracker.domain.ParcelStatusChangedEvent;
-import com.parcel.tracker.infrastructure.mongo.SpringDataParcelRepository;
+import com.parcel.tracker.domain.events.ParcelStatusChangedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -55,26 +51,25 @@ public class Tracker {
 
         CarrierClient client = findCarrierClient(parcel.getCarrier());
 
-        String newStatus;
+        ParcelStatus newStatus;
         try {
             newStatus = client.checkParcelStatus(parcel);
         } catch (CarrierClientException e) {
             log.error("Error during parcel status check: {}", e.getMessage());
             return;
         }
-
         Optional<ParcelStatus> latestStatus = parcel.latestStatus();
 
-        boolean statusChanged = latestStatus.isEmpty() || latestStatus.get().getStatus().equals(newStatus);
+        if (latestStatus.isEmpty() || !newStatus.equals(latestStatus.get())) {
+            log.info("Received new status {} for parcel {}", newStatus, parcel.getId());
 
-        if (statusChanged) {
-            log.debug("Received new status {} for parcel {}", newStatus, parcel.getId());
-
-            parcel.addNewStatus(ParcelStatus.of(newStatus, Instant.now()));
+            parcel.addNewStatus(newStatus);
             parcelRepository.save(parcel);
             notifiers.forEach(notifier ->
-                    notifier.notify(new ParcelStatusChangedEvent(parcel.getId(), newStatus, parcel.getDescription()))
+                    notifier.notify(new ParcelStatusChangedEvent(parcel.getId(), parcel.getCarrier(), newStatus))
             );
+        } else {
+            log.info("Parcel {} status hasn't changed. Still is {}.", parcel.getId(), latestStatus);
         }
     }
 

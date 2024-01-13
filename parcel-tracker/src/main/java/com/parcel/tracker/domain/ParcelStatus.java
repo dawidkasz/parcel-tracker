@@ -8,4 +8,5 @@ import java.time.Instant;
 public class ParcelStatus {
     String status;
     Instant timestamp;
+    String description;
 }
