@@ -31,6 +31,10 @@ public class PdfReportGenerator implements ReportGenerator {
     }
 
     public Optional<ReportDocument> generateReport(ReportRequest request, List<Parcel> parcels) {
+        if (parcels.isEmpty()) {
+            log.debug("No parcels provided for request {}", request);
+            return Optional.empty();
+        }
         var id = ReportId.nextIdentity();
         try (var stream = new ByteArrayOutputStream()) {
             try (var bufferedStream = new BufferedOutputStream(stream)) {
