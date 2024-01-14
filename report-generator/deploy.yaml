@@ -1,8 +1,7 @@
 version: '3.8'
 services:
   report-generator:
-    # image: localhost:8084/report-generator:latest
-    build: .
+    image: localhost:8084/report-generator:latest
     ports:
       - "6069:8080"
     networks:
