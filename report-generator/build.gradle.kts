@@ -18,13 +18,13 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("io.minio:minio:8.5.7")
-    implementation("io.github.openfeign:feign-gson:13.1")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.2.1")
     implementation("org.apache.pdfbox:pdfbox:3.0.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
-	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j:3.1.0")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -44,5 +44,5 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 tasks.bootBuildImage {
-	builder.set("paketobuildpacks/builder-jammy-base:latest")
+    builder.set("paketobuildpacks/builder-jammy-base:latest")
 }

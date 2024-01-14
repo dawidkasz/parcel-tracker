@@ -1,4 +1,4 @@
-package com.parcel.reportgenerator.config;
+package com.parcel.reportgenerator.infrastructure.persistence.minio;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
