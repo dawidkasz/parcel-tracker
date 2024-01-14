@@ -6,6 +6,8 @@ services:
       - "7037:8080"
     networks:
       - infrastructure_parcel-services
+    environment:
+      - EUREKA_URI=http://service-discovery:8080/eureka/
 networks:
   infrastructure_parcel-services:
     external: true

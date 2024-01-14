@@ -1,0 +1,28 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      bootstrap-servers: kafka:9092
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+  config:
+    import: "optional:configserver:"
+
+logging:
+  level:
+    com:
+      parcel:
+        tracker: DEBUG
+
+server:
+  port: 8080
+
+eureka:
+ client:
+   service-url:
+     defaultZone: ${EUREKA_URI:http://service-discovery:8080/eureka/}
+ instance:
+   preferIpAddress: true
