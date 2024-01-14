@@ -13,10 +13,6 @@ spring:
         enabled: true
         service-id: CONFIG-SERVER
       enabled: true
-    # openfeign:
-    #   client:
-    #     config:
-    #       parcel-finder:
   config:
     import: "optional:configserver:"
   minio:
