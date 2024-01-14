@@ -3,11 +3,11 @@ services:
   frontend:
     image: localhost:8084/frontend:latest
     ports:
-      - "3000:3000"
+      - "3001:3000"
     networks:
-      - frontend
+      - infrastructure_edge-api
 
 networks:
-  frontend:
-    driver: bridge
+  infrastructure_edge-api:
+    external: true
 

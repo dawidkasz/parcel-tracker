@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: parcel-tracker
   kafka:
     parcel-status-change-topic: parcel-status-change
     bootstrap-servers: localhost:29092
@@ -6,8 +8,6 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       bootstrap-servers: localhost:29092
-  application:
-    name: parcel-tracker
   cloud:
     config:
       discovery:
@@ -21,7 +21,7 @@ spring:
       database: parceldb
 
 server:
-  port: 9090
+  port: 9098
 
 logging:
   level:
@@ -29,12 +29,12 @@ logging:
       parcel:
         tracker: DEBUG
 
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-#  instance:
-#    preferIpAddress: true
+eureka:
+ client:
+   service-url:
+     defaultZone: ${EUREKA_URI:http://localhost:7020/eureka}
+ instance:
+   preferIpAddress: true
 
 management:
   endpoints:
