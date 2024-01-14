@@ -4,37 +4,32 @@ spring:
     port: 9000
     username: minio-root-user
     password: minio-root-password
+  data:
+    redis:
+      port: 6379
+      host: localhost
 
   application:
     name: report-generator
   cloud:
+    loadbalancer:
+      enabled: false
     config:
-      discovery:
-        enabled: true
-        service-id: CONFIG-SERVER
-    openfeign:
-      client:
-        config:
-          parcel-finder:
-            url: http://localhost:6969
+      enabled: false
+    # openfeign:
+    #   client:
+    #     config:
+    #       parcel-finder:
+    #         connect-timeout: 3000
+    #         url: http://localhost:8000
   config:
     import: "optional:configserver:"
 
 server:
   port: 9999
-
 eureka:
   client:
-    service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8080/eureka/}
-  instance:
-    preferIpAddress: true
-
-logging:
-  level:
-    com.netflix.eureka: DEBUG
-    com.parcel.reportgenerator.service: DEBUG
-
+    enabled: false
 management:
   health:
     circuitbreakers:
@@ -48,19 +43,3 @@ management:
         include:
           - '*'
 
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        registerHealthIndicator: true
-    instances:
-      reportGeneratorService:
-        registerHealthIndicator: true
-        eventConsumerBufferSize: 10
-        failureRateThreshold: 50
-        minimumNumberOfCalls: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
-        permittedNumberOfCallsInHalfOpenState: 3
-        slidingWindowSize: 10
-        slidingWindowType: COUNT_BASED

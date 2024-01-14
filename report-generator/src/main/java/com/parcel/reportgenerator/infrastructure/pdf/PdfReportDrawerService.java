@@ -1,4 +1,4 @@
-package com.parcel.reportgenerator.drawer;
+package com.parcel.reportgenerator.infrastructure.pdf;
 
 import com.parcel.reportgenerator.domain.Parcel;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ReportDrawerService {
+public class PdfReportDrawerService {
 
     public void draw(List<Parcel> parcels, OutputStream pdfDocument) {
         try (var document = new PDDocument()) {
@@ -26,29 +26,25 @@ public class ReportDrawerService {
                     content.beginText();
                     content.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 12);
                     content.newLineAtOffset(100, 700);
-                    content.showText("Origin: %s".formatted(parcel.origin()));
+                    content.showText("Id: %s".formatted(parcel.id()));
                     content.endText();
                     content.beginText();
 
                     content.newLineAtOffset(100, 680);
-                    content.showText("Destination: %s".formatted(parcel.destination()));
+                    content.showText("Carrier: %s".formatted(parcel.carrier()));
                     content.endText();
                     content.beginText();
                     content.newLineAtOffset(100, 660);
-                    content.showText("Weight: %s".formatted(parcel.weight()));
-                    content.endText();
-                    content.beginText();
-                    content.newLineAtOffset(100, 640);
                     content.showText("Status");
 
                     content.endText();
                     content.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
 
-                    var startY = 620;
-                    for (var status : parcel.status()) {
+                    var startY = 640;
+                    for (var status : parcel.history()) {
                         content.beginText();
                         content.newLineAtOffset(100, startY);
-                        content.showText("Time: %s State: %s".formatted(status.time(), status.text()));
+                        content.showText("Time: %s Description: %s State: %s".formatted(status.timestamp(), status.description(), status.status()));
                         content.endText();
                         startY -= 20;
                     }
