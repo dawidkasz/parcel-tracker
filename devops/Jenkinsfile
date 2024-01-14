@@ -67,9 +67,9 @@ pipeline {
         }
 
         stage('Build docker image') {
-            //when {
-              //  branch 'main'
-            //}
+            when {
+               branch 'main'
+            }
             steps {
                 script{
                     dirsToDockerBuild.each { dirName ->
@@ -84,9 +84,9 @@ pipeline {
             }
         }
         stage('Push to Nexus') {
-            //when {
-              //  branch 'main'
-            //}
+            when {
+               branch 'main'
+            }
             steps {
                 script {
                     docker.withRegistry("http://${NEXUS_URL}", "${NEXUS_CREDENTIALS_ID}") {
@@ -100,9 +100,9 @@ pipeline {
             }
         }
         stage('Deploy') {
-           // when {
-             //   branch 'main'
-           // }
+           when {
+               branch 'main'
+           }
             steps {
                 script{
                     dirsToDockerBuild.each { dirName ->
