@@ -5,8 +5,6 @@ import com.parcel.tracker.domain.Parcel;
 import com.parcel.tracker.domain.ParcelStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public interface CarrierClient {
     ParcelStatus checkParcelStatus(Parcel parcel) throws CarrierClientException;
