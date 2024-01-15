@@ -29,8 +29,10 @@ const ReportsModal = ({ isVisible, onClose }) => {
                     <div className="modal-content">
                         <ul className="package-list-container">
                             {reports[0] ? reports.map((rep) => (
-                                <li key={rep} onClick={() => handleDownloadReport(rep)}>
-                                    <strong>Numer raportu:</strong> {rep}
+                                <li key={rep.id} onClick={() => handleDownloadReport(rep)}>
+                                    <strong>Numer raportu:</strong> {rep.id}
+                                    <strong>Query raportu:</strong> {rep.query}
+                                    <strong>Czas stworzenia:</strong> {rep.creationTime}
                                 </li>
                             )) : <strong className='no-reports'>Brak raportów</strong>}
                         </ul>
