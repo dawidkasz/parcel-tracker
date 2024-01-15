@@ -1,4 +1,11 @@
 spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
   application:
     name: gateway
 

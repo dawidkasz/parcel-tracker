@@ -4,10 +4,8 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "https://docs.spring.io"
-            allowedMethods:
-              - GET
-              - POST
+            allowedOrigins: "*"
+            allowedMethods: "*"
   application:
     name: gateway
 
