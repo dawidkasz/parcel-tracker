@@ -52,5 +52,6 @@ public class ParcelFinderController {
     }
 
     public record ErrorResponse(String detail) {
+
     }
 }
