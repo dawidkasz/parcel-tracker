@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ReportsModal.css';
-import { handleDownloadReport } from '../../functions';
+import { handleDownloadReport, handleGetReports } from '../../functions';
 
-const ReportsModal = ({ isVisible, onClose, reports }) => {
+const ReportsModal = ({ isVisible, onClose }) => {
+    const [reports, setReports] = useState([]);
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            const fetchedReports = await handleGetReports();
+            setReports(fetchedReports || []);
+        };
+
+        if (isVisible) {
+            fetchReports();
+        }
+    }, [isVisible]);
 
     return (
         isVisible && (
@@ -20,7 +32,7 @@ const ReportsModal = ({ isVisible, onClose, reports }) => {
                                 <li key={rep} onClick={() => handleDownloadReport(rep)}>
                                     <strong>Numer raportu:</strong> {rep}
                                 </li>
-                            )): <strong className='no-reports'>Brak raportów</strong>}
+                            )) : <strong className='no-reports'>Brak raportów</strong>}
                         </ul>
                     </div>
                 </div>
