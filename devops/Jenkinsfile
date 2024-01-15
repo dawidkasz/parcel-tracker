@@ -5,7 +5,6 @@ def dirsToDockerBuild = null
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'my-spring-app'
         NEXUS_URL = '172.26.0.2:8084'
         NEXUS_CREDENTIALS_ID = 'nexus-id'
     }
@@ -61,6 +60,22 @@ pipeline {
                     }
 
                     // Run the build steps in parallel
+                    parallel buildSteps
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    def buildSteps = [:] 
+                    dirsToBuild.each { dirName ->
+                        buildSteps[dirName] = {
+                            dir(dirName) {
+                                sh './gradlew test'
+                            }
+                        }
+                    }
                     parallel buildSteps
                 }
             }
