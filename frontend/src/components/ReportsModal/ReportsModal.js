@@ -16,6 +16,8 @@ const ReportsModal = ({ isVisible, onClose }) => {
         }
     }, [isVisible]);
 
+    console.log("Reports modal")
+
     return (
         isVisible && (
             <div className="modal-overlay" onClick={onClose}>

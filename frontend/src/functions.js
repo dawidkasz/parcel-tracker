@@ -65,7 +65,6 @@ export const handleGenerateReport = async (query, reports, setReports, setSucces
 };
 
 export const handleDownloadReport = async (name) => {
-
     const apiUrl = 'https://mszawerdops.bieda.it/api/report';
 
     try {
