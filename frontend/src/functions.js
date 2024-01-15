@@ -66,11 +66,20 @@ export const handleGenerateReport = async (query, reports, setReports, setSucces
 
 export const handleDownloadReport = async (name) => {
 
-    const apiUrl = 'https://mszawerdops.bieda.it/api/report/report';
+    const apiUrl = 'https://mszawerdops.bieda.it/api/report';
 
     try {
-        const response = await axios.get(`${apiUrl}/${name}`);
+        const response = await axios.get(`${apiUrl}${name}`);
         return response;
+    } catch (error) {
+        console.error('Błąd podczas pobierania.', error);
+    }
+};
+
+export const handleGetReports = async () => {
+    try {
+        const response = await axios.get('https://mszawerdops.bieda.it/api/report/reports');
+        return response.data;
     } catch (error) {
         console.error('Błąd podczas pobierania.', error);
     }
