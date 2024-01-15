@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 public class GatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GatewayApplication.class, args);
+		SpringApplication.run(GatewayApplication.class,  args);
 	}
 
 	@Bean
