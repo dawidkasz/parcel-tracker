@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrackingController {
     private final Tracker tracker;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/start")
     public ResponseEntity<TrackingResponse> addParcelToTracking(@RequestBody StartParcelTrackingRequest request) throws DomainException {
         tracker.startTracking(request.toParcel());
