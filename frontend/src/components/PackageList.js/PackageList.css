@@ -1,0 +1,11 @@
+.package-list-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .package-list-container {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
